@@ -36,6 +36,7 @@ int main() {
     }
 
     // Make the context of our window the main context on the current thread
+    // The OpenGL context is an environment for all state and resources for OpenGL to render
     glfwMakeContextCurrent(window);
 
     // Initialize GLAD, load OpenGL function pointers at runtime
@@ -59,6 +60,39 @@ int main() {
 
     /* A frame buffer stores the pixel information in a frame, the frame buffer size
        is the width and the height of the screen */
+
+    float vertices[] = {
+        -0.5f, -0.5f, 0.0f,
+        0.5f, -0.5f, 0.0f,
+        0.0f,  0.5f, 0.0f
+    };
+
+    /* Vertices are transformed to NDC in the vertex shader, any vertices outside
+       the interval [-1, 1] are clipped */
+
+    // Holds the id of the buffer
+    unsigned int VBO;
+
+    // Generating the buffer (1 is the number of buffers to create, VBO stores the id)
+    glGenBuffers(1, &VBO);
+
+    // GL_ARRAY_BUFFER is the buffer object for vertex buffer objects, and it is
+    // binded to VBO. By binding it whatever operation we perform on the GL_ARRAY_BUFFER
+    // affects the VBO buffer
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    
+    // glBufferData lets us send user-defined data into the currently bound buffer
+    // First argument: Type of buffer we want to send data into
+    // Second argument: The size of the data we want to pass into the buffer (in bytes)
+    // Third argument: The data to send into the buffer
+    // Fourth Argument: How we want the GPU to manage the given data:
+    /* GL_STREAM_DRAW: the data is set only once and used by the GPU at most a few times.
+       GL_STATIC_DRAW: the data is set only once and used many times.
+       GL_DYNAMIC_DRAW: the data is changed a lot and used many times. */
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    /* Vertex buffer objects allow you to send large batches of vertex data to the GPU's memory 
+       directly rather than one by one with the CPU */
 
     while (!glfwWindowShouldClose(window))
     {
