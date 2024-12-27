@@ -33,6 +33,17 @@ const char* vertexShaderSource = (
     "}\0"
 );
 
+/* A simple fragment shader */
+const char* fragmentShaderSource = (
+    "#version 330 core\n"
+    "out vec4 FragColor"    
+
+    "void main()"
+    "{\n"
+    "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);"
+    "}\0"
+);
+
 int main() {
     glfwInit();
     
@@ -123,6 +134,13 @@ int main() {
     
     // Compile the shader
     glCompileShader(vertexShader);
+
+
+    /* Create the fragment shader */
+    unsigned int fragmentShader;
+    fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
+    glCompileShader(fragmentShader);
 
 
     /* Vertex buffer objects allow you to send large batches of vertex data to the GPU's memory 
