@@ -1,3 +1,21 @@
+# Ignore build files
+x64/
+Debug/
+Release/
+
+# Ignore Visual Studio files
+.vs/
+*.vcxproj.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Ignore CMake build files
+CMakeCache.txt
+CMakeFiles/
+Makefile
+cmake_install.cmake
+
 # Prerequisites
 *.d
 
