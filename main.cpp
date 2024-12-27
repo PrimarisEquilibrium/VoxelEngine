@@ -16,6 +16,23 @@ void processInput(GLFWwindow* window)
     }
 }
 
+/* A simple vertex shader */
+const char* vertexShaderSource = (
+    // Define the GLSL (OpenGL shader language) version to 3.3
+    "#version 330 core\n"
+
+    // Declare the vertex data attributes (in a vector3 in this case, x, y, z)
+    // Also store the input variable using layout (location = 0)
+    "layout (location = 0) in vec3 aPos;\n"
+
+    // Whatever gl_Position is will be the output of the vertex shader
+    // Set the gl_Position to the vertex position, with perspective division (fourth dimension) to 1
+    "void main()\n"
+    "{\n"
+    "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+    "}\0"
+);
+
 int main() {
     glfwInit();
     
@@ -61,6 +78,7 @@ int main() {
     /* A frame buffer stores the pixel information in a frame, the frame buffer size
        is the width and the height of the screen */
 
+
     float vertices[] = {
         -0.5f, -0.5f, 0.0f,
         0.5f, -0.5f, 0.0f,
@@ -70,6 +88,7 @@ int main() {
     /* Vertices are transformed to NDC in the vertex shader, any vertices outside
        the interval [-1, 1] are clipped */
 
+    /* Create the vertex buffer object */
     // Holds the id of the buffer
     unsigned int VBO;
 
@@ -90,6 +109,21 @@ int main() {
        GL_STATIC_DRAW: the data is set only once and used many times.
        GL_DYNAMIC_DRAW: the data is changed a lot and used many times. */
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    
+
+    /* Create the vertex shader */
+    // The id that references the vertex shader
+    unsigned int vertexShader;
+
+    // Create an OpenGL shader
+    vertexShader = glCreateShader(GL_VERTEX_SHADER);
+
+    // Sets the vertex shader to have the source code we wrote
+    glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
+    
+    // Compile the shader
+    glCompileShader(vertexShader);
+
 
     /* Vertex buffer objects allow you to send large batches of vertex data to the GPU's memory 
        directly rather than one by one with the CPU */
