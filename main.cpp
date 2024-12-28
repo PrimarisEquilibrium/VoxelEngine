@@ -142,6 +142,22 @@ int main() {
     glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
     glCompileShader(fragmentShader);
 
+    /* Create a shader program object, a shader program object is the final linked
+       version of multiple shaders combined. */
+    unsigned int shaderProgram;
+
+    // Create the shader program
+    shaderProgram = glCreateProgram();
+
+    // Attach the shaders to the shader program
+    glAttachShader(shaderProgram, vertexShader);
+    glAttachShader(shaderProgram, fragmentShader);
+    glLinkProgram(shaderProgram);
+
+    // Active the shader program
+    // All rendering calls after this line of code will use this shader program object
+    glUseProgram(shaderProgram);
+
 
     /* Vertex buffer objects allow you to send large batches of vertex data to the GPU's memory 
        directly rather than one by one with the CPU */
