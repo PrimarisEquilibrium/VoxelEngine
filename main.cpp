@@ -16,6 +16,19 @@ void processInput(GLFWwindow* window)
     }
 }
 
+// Ensure the shader compiled successfully
+void validateShaderCompilation(unsigned int vertexShader)
+{
+    int success;
+    char infoLog[512];
+    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
+    if (!success)
+    {
+        glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
+        std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+    }
+}
+
 /* A simple vertex shader */
 const char* vertexShaderSource = (
     // Define the GLSL (OpenGL shader language) version to 3.3
@@ -36,9 +49,9 @@ const char* vertexShaderSource = (
 /* A simple fragment shader */
 const char* fragmentShaderSource = (
     "#version 330 core\n"
-    "out vec4 FragColor"    
+    "out vec4 FragColor;\n"    
 
-    "void main()"
+    "void main()\n"
     "{\n"
     "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);"
     "}\0"
@@ -106,6 +119,13 @@ int main() {
     // Generating the buffer (1 is the number of buffers to create, VBO stores the id)
     glGenBuffers(1, &VBO);
 
+    /* Create the vertex array object, acts like a storage for VBO configuration */
+    unsigned int VAO;
+    glGenVertexArrays(1, &VAO);
+
+    // Bind the vertex array object
+    glBindVertexArray(VAO);
+
     // GL_ARRAY_BUFFER is the buffer object for vertex buffer objects, and it is
     // binded to VBO. By binding it whatever operation we perform on the GL_ARRAY_BUFFER
     // affects the VBO buffer
@@ -143,16 +163,26 @@ int main() {
 
     // Sets the vertex shader to have the source code we wrote
     glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-    
+
     // Compile the shader
     glCompileShader(vertexShader);
+
+    // Ensure the vertex shader compiled properly
+    validateShaderCompilation(vertexShader);
 
 
     /* Create the fragment shader */
     unsigned int fragmentShader;
+
     fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+
     glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
+
     glCompileShader(fragmentShader);
+
+    // Ensure the fragment shader compiled properly
+    validateShaderCompilation(vertexShader);
+
 
     /* Create a shader program object, a shader program object is the final linked
        version of multiple shaders combined. */
@@ -179,9 +209,14 @@ int main() {
         // Input
         processInput(window);
 
-        // Rendering commands here
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
+
+        glUseProgram(shaderProgram);
+        glBindVertexArray(VAO);
+
+        // Draws an array of vertices, takes a primitive, starting index, and # of vertices to draw
+        glDrawArrays(GL_TRIANGLES, 0, 3);
 
         // Swaps the color buffer with the one that was just rendered
         glfwSwapBuffers(window);
