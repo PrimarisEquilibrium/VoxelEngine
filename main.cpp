@@ -102,11 +102,24 @@ int main() {
     /* A frame buffer stores the pixel information in a frame, the frame buffer size
        is the width and the height of the screen */
 
-
-    float vertices[] = {
+    // Single triangle
+    /* float vertices[] = {
         -0.5f, -0.5f, 0.0f,
         0.5f, -0.5f, 0.0f,
         0.0f,  0.5f, 0.0f
+    }; */
+
+    // 6 vertex rectangle (only using 4 vertices in memory)
+    float vertices[] = {
+        0.5f,  0.5f, 0.0f,   // top right
+        0.5f, -0.5f, 0.0f,   // bottom right
+        -0.5f, -0.5f, 0.0f,  // bottom left
+        -0.5f,  0.5f, 0.0f   // top left 
+    };
+
+    unsigned int indices[] = {
+        0, 1, 3,   // first triangle
+        1, 2, 3    // second triangle
     };
 
     /* Vertices are transformed to NDC in the vertex shader, any vertices outside
@@ -152,6 +165,16 @@ int main() {
 
     // Enable the position (vec3) to be used for the vertex shader during rendering
     glEnableVertexAttribArray(0);
+
+
+    /* Create the elements buffer object, allow us to specify what vertices to draw and in what order */
+    unsigned int EBO;
+
+    glGenBuffers(1, &EBO);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
     
 
     /* Create the vertex shader */
@@ -213,10 +236,21 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT);
 
         glUseProgram(shaderProgram);
+
+        // The VAO stores the configuration for
+        //  - the VBO buffer binded to GL_ARRAY_BUFFER
+        //  - vertex attribute configurations via glVertexAttribPointer
+        //  - calls to glEnableVertexAttribArray or glDisableVertexAttribArray
+        //  - the EBO buffer binded to GL_ELEMENT_ARRAY_BUFFER
         glBindVertexArray(VAO);
 
         // Draws an array of vertices, takes a primitive, starting index, and # of vertices to draw
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        // glDrawArrays(GL_TRIANGLES, 0, 3);
+
+        // Draws using EBO, takes a primative, # of vertices to draw, type of indices, and starting index
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+        glBindVertexArray(0);
 
         // Swaps the color buffer with the one that was just rendered
         glfwSwapBuffers(window);
