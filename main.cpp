@@ -120,6 +120,18 @@ int main() {
        GL_STATIC_DRAW: the data is set only once and used many times.
        GL_DYNAMIC_DRAW: the data is changed a lot and used many times. */
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    /* Let OpenGL know how to interpret our vertex attributes */
+    // First argument: The location index of the vertex attribute we want to configure, layout (location = 0) earlier
+    // Second argument: The size of the vertex attribute, vec3 is composed of 3 values
+    // Third argument: The type of data being stored
+    // Fourth argument: Whether or not the data is normalized (not relevant if you're working with floats)
+    // Fifth argument: The stride, the space inbetween consecutive vertex attributes
+    // Sixth argument: The offset from the start of the data array (type is void*)
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+
+    // Enable the position (vec3) to be used for the vertex shader during rendering
+    glEnableVertexAttribArray(0);
     
 
     /* Create the vertex shader */
