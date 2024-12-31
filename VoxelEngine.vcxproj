@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="dependencies\lib\stb.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
