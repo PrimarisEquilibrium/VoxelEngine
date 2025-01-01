@@ -8,17 +8,31 @@
 #include <stb/stb_image.h>
 
 /* Every time the window is resized we need to adjust the OpenGL viewport */
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+static void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
     glViewport(0, 0, width, height);
 }
 
 /* Process input using GLFW */
-void processInput(GLFWwindow* window)
+static void processInput(GLFWwindow* window)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, true);
     }
+}
+
+static void load2DTexture(const char *filename, GLenum format)
+{
+    int width, height, nrChannels;
+    unsigned char* data = stbi_load(filename, &width, &height, &nrChannels, 0);
+    if (data) {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+    else {
+        std::cout << "Failed to load texture" << std::endl;
+    }
+    stbi_image_free(data); // Free the image from memory
 }
 
 int main() {
@@ -118,17 +132,7 @@ int main() {
     // Flip the image vertically (texture coordinates have 0.0 at the bottom)
     stbi_set_flip_vertically_on_load(true);
 
-    // Load and generate the textures
-    int width1, height1, nrChannels1;
-    unsigned char* data1 = stbi_load(".\\public\\images\\container.jpg", &width1, &height1, &nrChannels1, 0);
-    if (data1) {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width1, height1, 0, GL_RGB, GL_UNSIGNED_BYTE, data1);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-    else {
-        std::cout << "Failed to load texture" << std::endl;
-    }
-    stbi_image_free(data1); // Free the image from memory
+    load2DTexture(".\\public\\images\\container.jpg", GL_RGB);
 
 
     /* Texture 2 */
@@ -142,16 +146,8 @@ int main() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    int width2, height2, nrChannels2;
-    unsigned char* data2 = stbi_load(".\\public\\images\\awesomeface.png", &width2, &height2, &nrChannels2, 0);
-    if (data2) {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width2, height2, 0, GL_RGBA, GL_UNSIGNED_BYTE, data2);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-    else {
-        std::cout << "Failed to load texture" << std::endl;
-    }
-    stbi_image_free(data2); // Free the image from memory
+    load2DTexture(".\\public\\images\\awesomeface.png", GL_RGBA);
+
 
     shader.use();
     // Manually set which texture unit each shader sampler (the handle in the GLSL code) belongs to
