@@ -12,6 +12,16 @@
 #include <../include/glm/gtc/matrix_transform.hpp>
 #include <../include/glm/gtc/type_ptr.hpp>
 
+
+// Constants
+const unsigned int sWIDTH = 800;
+const unsigned int sHEIGHT = 600;
+const unsigned int FOV = 60;
+
+// Computed variables
+const float ASPECT_RATIO = (float)sWIDTH / (float)sHEIGHT;
+
+
 /* Every time the window is resized we need to adjust the OpenGL viewport */
 static void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
@@ -34,7 +44,7 @@ int main() {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     // Create a GLFW window
-    GLFWwindow* window = glfwCreateWindow(800, 600, "Voxel Engine", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(sWIDTH, sHEIGHT, "Voxel Engine", NULL, NULL);
     if (window == NULL)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -51,15 +61,11 @@ int main() {
         return -1;
     }
 
-    // Configure global OpenGL state
-    glEnable(GL_DEPTH_TEST);
-
-    // Load shader object
-    Shader shader(".\\src\\shaders\\vertex.glsl", ".\\src\\shaders\\fragment.glsl");
-
-    /* Under the hood OpenGL uses glViewport to map normalized device coordinates
-       to pixel-based screen coordinates. */
     glViewport(0, 0, 800, 600);
+
+    // Configure global OpenGL state
+    glEnable(GL_TEXTURE_3D);
+    glEnable(GL_DEPTH_TEST);
 
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
@@ -126,21 +132,15 @@ int main() {
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
-    
     /* Create textures */
-    Texture texture1(GL_TEXTURE_2D, GL_TEXTURE0);
-    texture1.bind();
-    texture1.load(".\\public\\images\\container.jpg", GL_RGB);
+    Texture texture(GL_TEXTURE_2D, GL_TEXTURE0);
+    texture.bind();
+    texture.load(".\\public\\assets\\dirt.jpg", GL_RGB);
 
-    Texture texture2(GL_TEXTURE_2D, GL_TEXTURE1);
-    texture2.bind();
-    texture2.load(".\\public\\images\\awesomeface.png", GL_RGBA);
-
-
+    /* Create shader */
+    Shader shader(".\\src\\shaders\\vertex.glsl", ".\\src\\shaders\\fragment.glsl");
     shader.use();
-    // Manually set which texture unit each shader sampler (the handle in the GLSL code) belongs to
-    shader.setInt("texture1", 0);
-    shader.setInt("texture2", 1);
+    shader.setInt("texture", 0);
 
     while (!glfwWindowShouldClose(window))
     {
@@ -151,19 +151,31 @@ int main() {
 
         glBindVertexArray(VAO);
 
-        // Transformations
-        glm::mat4 model = glm::mat4(1.0f);
-        glm::mat4 view = glm::mat4(1.0f);
-        glm::mat4 projection = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
-        model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 0.5f, 0.0f));
-        view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
-        projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
-        shader.setMat4("model", model);
-        shader.setMat4("view", view);
-        shader.setMat4("projection", projection);
+        int CHUNK_SIZE = 8;
+        for (int i = 0; i < CHUNK_SIZE; i++)
+        {
+            for (int j = 0; j < CHUNK_SIZE; j++)
+            {
+                for (int k = 0; k < CHUNK_SIZE; k++)
+                {
+                    glm::mat4 model = glm::mat4(1.0f);
+                    glm::mat4 view = glm::mat4(1.0f);
+                    glm::mat4 projection = glm::mat4(1.0f);
 
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+                    model = glm::translate(model, glm::vec3(i - CHUNK_SIZE / 2, j - CHUNK_SIZE / 2, k - CHUNK_SIZE / 2));
+
+                    view = glm::translate(view, glm::vec3(0.0f, 0.0f, -25.0f));
+                    view = glm::rotate(view, glm::radians(45.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+
+                    projection = glm::perspective(glm::radians(45.0f), ASPECT_RATIO, 0.1f, 100.0f);
+
+                    shader.setMat4("model", model);
+                    shader.setMat4("view", view);
+                    shader.setMat4("projection", projection);
+                    glDrawArrays(GL_TRIANGLES, 0, 36);
+                }
+            }
+        }
 
         glfwSwapBuffers(window);
         glfwPollEvents();
