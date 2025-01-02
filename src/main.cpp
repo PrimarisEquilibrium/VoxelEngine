@@ -114,7 +114,7 @@ int main() {
     };
 
     /* Create vertex array object and all associated configurations */
-    unsigned int VAO, VBO;
+    GLuint VAO, VBO;
 
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);

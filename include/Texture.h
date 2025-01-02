@@ -8,7 +8,7 @@ class Texture
 {
 public:
     // The ID/handler of the texture.
-    unsigned int ID;
+    GLuint ID;
 
     // The texture target (e.g., GL_TEXTURE_2D, GL_TEXTURE_3D)
     GLenum TARGET;

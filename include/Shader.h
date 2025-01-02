@@ -11,7 +11,7 @@ class Shader
 {
 public:
     // The ID/handler of the shader.
-    unsigned int ID;
+    GLuint ID;
 
     /**
      * Constructor generates the shader.
@@ -31,7 +31,7 @@ public:
     void setMat4(const std::string& name, glm::mat4 value) const;
 private:
     // Utility function for checking shader compilation/linking errors
-    void checkCompileErrors(unsigned int shader, std::string type);
+    void checkCompileErrors(GLuint shader, std::string type);
 };
 
 #endif

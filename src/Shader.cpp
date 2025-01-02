@@ -47,7 +47,7 @@ Shader::Shader(const char* vertexPath, const char* fragmentPath)
     const char* vShaderCode = vertexCode.c_str();
     const char* fShaderCode = fragmentCode.c_str();
     // 2. compile shaders
-    unsigned int vertex, fragment;
+    GLuint vertex, fragment;
     // vertex shader
     vertex = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertex, 1, &vShaderCode, NULL);
@@ -96,7 +96,7 @@ void Shader::setMat4(const std::string& name, glm::mat4 value) const
 }
 
 // Private methods
-void Shader::checkCompileErrors(unsigned int shader, std::string type)
+void Shader::checkCompileErrors(GLuint shader, std::string type)
 {
     int success;
     char infoLog[1024];
