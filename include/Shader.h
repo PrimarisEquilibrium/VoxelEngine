@@ -10,9 +10,15 @@
 class Shader 
 {
 public:
+    // The ID/handler of the shader.
     unsigned int ID;
 
-    // Constructor generates the shader on the fly
+    /**
+     * Constructor generates the shader.
+     * 
+     * @param vertexPath The path to the vertex shader file.
+     * @param fragmentPath The path to the fragment shader file.
+     */
     Shader(const char* vertexPath, const char* fragmentPath);
 
     // Activate the shader

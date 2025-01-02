@@ -10,10 +10,13 @@
 Texture::Texture(GLenum target, GLenum textureUnit)
 {
     TARGET = target;
+
+    // Generate and bind the texture
     glGenTextures(1, &ID);
     glActiveTexture(textureUnit);
     glBindTexture(target, ID);
 
+    // Set the wrap and texture filtering options
     glTexParameteri(TARGET, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(TARGET, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(TARGET, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);

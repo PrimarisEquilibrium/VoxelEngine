@@ -13,6 +13,12 @@ public:
     // The texture target (e.g., GL_TEXTURE_2D, GL_TEXTURE_3D)
     GLenum TARGET;
 
+    /**
+     * Constructor generates the texture.
+     * 
+     * @param target The texture target (e.g., GL_TEXTURE_2D, GL_TEXTURE_3D).
+     * @param textureUnit The assigned texture unit for the texture.
+     */
     Texture(GLenum target, GLenum textureUnit);
 
     /**
