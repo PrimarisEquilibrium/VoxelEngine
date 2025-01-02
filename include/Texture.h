@@ -8,12 +8,12 @@ class Texture
 {
 public:
     unsigned int ID;
-    GLenum target;
+    GLenum TARGET;
 
     Texture(GLenum target, GLenum textureUnit);
 
     /* Loads the texture from file */
-    void load(const char* filename, GLenum format);
+    void load(const char* filename, GLenum format) const;
     /* Binds this texture to the target state */
     void bind() const;
 };
