@@ -16,8 +16,8 @@ enum class TextureType
 
 struct TexelOffset
 {
-    int x_offset;
-    int y_offset;
+    float x_offset;
+    float y_offset;
 };
 
 class Texture
@@ -30,7 +30,7 @@ public:
     GLenum TARGET;
 
     // How many pixels wide each tile on the texture atlas is.
-    const int TILE_SIZE = 16;
+    const float TILE_SIZE = 16.0f;
 
     // Hashmap containing key value pairs of the texture type to texel offset.
     std::unordered_map<TextureType, TexelOffset> textureOffsets;

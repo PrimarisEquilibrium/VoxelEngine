@@ -68,57 +68,64 @@ int main() {
 
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
-    float vertices[] = {
-        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f, // Front face
-         0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+    /* Create textures */
+    Texture texture(GL_TEXTURE_2D, GL_TEXTURE0);
+    texture.bind();
+    texture.load(TEXTURE_ATLAS, GL_RGB);
 
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // Back face
-         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-
-        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f, // Left face
-        -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-        -0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-
-         0.5f,  0.5f,  0.5f,  0.0f, 1.0f, // Right face
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-         0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-         0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-         0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-         0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // Bottom face
-         0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f, // Top face
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
-    };
+    auto [dirtX, dirtY] = texture.getTexelOffset(TextureType::Dirt);
+    auto [grassSX, grassSY] = texture.getTexelOffset(TextureType::GrassSide);
+    auto [grassTX, grassTY] = texture.getTexelOffset(TextureType::GrassTop);
     
-    TextureType faceType[] = {
-        TextureType::GrassSide,
-        TextureType::GrassSide,
-        TextureType::GrassSide,
-        TextureType::GrassSide,
-        TextureType::Dirt,
-        TextureType::GrassTop
+    float vertices[] = {
+         // Position          // Texture   // Texture Offset
+         // Front face
+        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,  grassSX, grassSY,
+         0.5f, -0.5f, -0.5f,  1.0f, 0.0f,  grassSX, grassSY,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,  grassSX, grassSY,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,  grassSX, grassSY,
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,  grassSX, grassSY,
+        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,  grassSX, grassSY,
+
+        // Back face
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,  grassSX, grassSY,
+         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,  grassSX, grassSY,
+         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,  grassSX, grassSY,
+         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,  grassSX, grassSY,
+        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,  grassSX, grassSY,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,  grassSX, grassSY,
+
+         // Left face
+        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,  grassSX, grassSY,
+        -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,  grassSX, grassSY,
+        -0.5f, -0.5f, -0.5f,  1.0f, 0.0f,  grassSX, grassSY,
+        -0.5f, -0.5f, -0.5f,  1.0f, 0.0f,  grassSX, grassSY,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,  grassSX, grassSY,
+        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,  grassSX, grassSY,
+
+         // Right face
+         0.5f,  0.5f,  0.5f,  0.0f, 1.0f,  grassSX, grassSY,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,  grassSX, grassSY,
+         0.5f, -0.5f, -0.5f,  1.0f, 0.0f,  grassSX, grassSY,
+         0.5f, -0.5f, -0.5f,  1.0f, 0.0f,  grassSX, grassSY,
+         0.5f, -0.5f,  0.5f,  0.0f, 0.0f,  grassSX, grassSY,
+         0.5f,  0.5f,  0.5f,  0.0f, 1.0f,  grassSX, grassSY,
+
+         // Bottom face
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,  dirtX, dirtY,
+         0.5f, -0.5f, -0.5f,  1.0f, 1.0f,  dirtX, dirtY,
+         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,  dirtX, dirtY,
+         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,  dirtX, dirtY,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,  dirtX, dirtY,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,  dirtX, dirtY,
+
+         // Top face
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,  grassTX, grassTY,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,  grassTX, grassTY,
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,  grassTX, grassTY,
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,  grassTX, grassTY,
+        -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,  grassTX, grassTY,
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,  grassTX, grassTY,
     };
 
     /* Create vertex array object and all associated configurations */
@@ -133,22 +140,23 @@ int main() {
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
     // Position
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 7 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
     // Texture Coordinates
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 7 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
-    /* Create textures */
-    Texture texture(GL_TEXTURE_2D, GL_TEXTURE0);
-    texture.bind();
-    texture.load(TEXTURE_ATLAS, GL_RGB);
+    // Texture Offset
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 7 * sizeof(float), (void*)(5 * sizeof(float)));
+    glEnableVertexAttribArray(2);
 
     /* Create shader */
     Shader shader(".\\public\\shaders\\vertex.glsl", ".\\public\\shaders\\fragment.glsl");
     shader.use();
     shader.setInt("texture", 0);
+    shader.setFloat("atlasHeight", 1024.0);
+    shader.setFloat("tileSize", (float)texture.TILE_SIZE);
 
     while (!glfwWindowShouldClose(window))
     {
@@ -169,9 +177,6 @@ int main() {
             view = glm::rotate(view, (float)glfwGetTime() * glm::radians(45.0f), glm::vec3(1.0f, 1.0f, 0.0f));
 
             projection = glm::perspective(glm::radians(45.0f), ASPECT_RATIO, 0.1f, 100.0f);
-
-            TexelOffset UVoffset = texture.getTexelOffset(faceType[i]);
-            glUniform2f(glGetUniformLocation(shader.ID, "UVoffset"), (GLfloat)UVoffset.x_offset, (GLfloat)UVoffset.y_offset);
 
             shader.setMat4("model", model);
             shader.setMat4("view", view);
