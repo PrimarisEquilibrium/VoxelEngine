@@ -3,6 +3,10 @@
 
 #include <string>
 
+#include <../include/glm/glm.hpp>
+#include <../include/glm/gtc/matrix_transform.hpp>
+#include <../include/glm/gtc/type_ptr.hpp>
+
 class Shader 
 {
 public:
@@ -18,6 +22,7 @@ public:
     void setBool(const std::string& name, bool value) const;
     void setInt(const std::string& name, int value) const;
     void setFloat(const std::string& name, float value) const;
+    void setMat4(const std::string& name, glm::mat4 value) const;
 private:
     // Utility function for checking shader compilation/linking errors
     void checkCompileErrors(unsigned int shader, std::string type);
