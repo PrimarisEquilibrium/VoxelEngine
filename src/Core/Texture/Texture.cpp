@@ -4,7 +4,7 @@
 #include <iostream>
 #include <stb/stb_image.h>
 
-#include "../include/Texture.h"
+#include "Texture.h"
 
 
 Texture::Texture(GLenum target, GLenum textureUnit)

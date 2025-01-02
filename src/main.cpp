@@ -1,13 +1,11 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "../include/Shader.h"
-#include "../include/Texture.h"
+#include "Shaders/Shader.h"
+#include "Core/Texture/Texture.h"
+#include "Core/TextureManager/TextureManager.h"
 
-#include <filesystem>
 #include <iostream>
-#include <unordered_map>
-#include <stb/stb_image.h>
 
 #include <../include/glm/glm.hpp>
 #include <../include/glm/gtc/matrix_transform.hpp>
@@ -22,27 +20,6 @@ const char* TEXTURE_ATLAS = ".\\public\\textures\\texture_atlas.png";
 
 // Computed variables
 const float ASPECT_RATIO = (float)sWIDTH / (float)sHEIGHT;
-
-
-enum class TextureType
-{
-    Dirt      = 0,
-    GrassSide = 1,
-    GrassTop  = 2
-};
-
-struct TexelOffset
-{
-    int x_offset;
-    int y_offset;
-};
-
-const unsigned int TILE_SIZE = 16;
-std::unordered_map<TextureType, TexelOffset> textureOffsets = {
-    {TextureType::Dirt, TexelOffset{0, 0}},
-    {TextureType::GrassSide, TexelOffset{TILE_SIZE * 1, 0}},
-    {TextureType::GrassTop, TexelOffset{TILE_SIZE * 2, 0}}
-};
 
 
 /* Every time the window is resized we need to adjust the OpenGL viewport */
@@ -169,6 +146,9 @@ int main() {
     texture.bind();
     texture.load(TEXTURE_ATLAS, GL_RGB);
 
+    /* Create texture manager */
+    TextureManager textureManager;
+
     /* Create shader */
     Shader shader(".\\public\\shaders\\vertex.glsl", ".\\public\\shaders\\fragment.glsl");
     shader.use();
@@ -194,7 +174,7 @@ int main() {
 
             projection = glm::perspective(glm::radians(45.0f), ASPECT_RATIO, 0.1f, 100.0f);
 
-            TexelOffset UVoffset = textureOffsets[faceType[i]];
+            TexelOffset UVoffset = textureManager.getTexelOffset(faceType[i]);
             glUniform2f(glGetUniformLocation(shader.ID, "UVoffset"), (GLfloat)UVoffset.x_offset, (GLfloat)UVoffset.y_offset);
 
             shader.setMat4("model", model);
