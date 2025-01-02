@@ -3,7 +3,6 @@
 
 #include "Shaders/Shader.h"
 #include "Core/Texture/Texture.h"
-#include "Core/TextureManager/TextureManager.h"
 
 #include <iostream>
 
@@ -146,9 +145,6 @@ int main() {
     texture.bind();
     texture.load(TEXTURE_ATLAS, GL_RGB);
 
-    /* Create texture manager */
-    TextureManager textureManager;
-
     /* Create shader */
     Shader shader(".\\public\\shaders\\vertex.glsl", ".\\public\\shaders\\fragment.glsl");
     shader.use();
@@ -174,7 +170,7 @@ int main() {
 
             projection = glm::perspective(glm::radians(45.0f), ASPECT_RATIO, 0.1f, 100.0f);
 
-            TexelOffset UVoffset = textureManager.getTexelOffset(faceType[i]);
+            TexelOffset UVoffset = texture.getTexelOffset(faceType[i]);
             glUniform2f(glGetUniformLocation(shader.ID, "UVoffset"), (GLfloat)UVoffset.x_offset, (GLfloat)UVoffset.y_offset);
 
             shader.setMat4("model", model);

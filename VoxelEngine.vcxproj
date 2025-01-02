@@ -140,14 +140,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="dependencies\lib\stb.cpp" />
-    <ClCompile Include="src\Core\TextureManager\TextureManager.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Shaders\Shader.cpp" />
     <ClCompile Include="src\Core\Texture\Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Core\TextureManager\TextureManager.h" />
     <ClInclude Include="src\Shaders\Shader.h" />
     <ClInclude Include="src\Core\Texture\Texture.h" />
   </ItemGroup>
