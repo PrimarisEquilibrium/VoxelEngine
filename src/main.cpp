@@ -3,6 +3,7 @@
 
 #include "Shaders/Shader.h"
 #include "Core/Texture/Texture.h"
+#include "Core/Camera/Camera.h"
 
 #include <iostream>
 
@@ -20,15 +21,19 @@ const char* TEXTURE_ATLAS = ".\\public\\textures\\texture_atlas.png";
 // Computed variables
 const float ASPECT_RATIO = (float)sWIDTH / (float)sHEIGHT;
 
-// Camera variables
-glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
-glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
-float fov = 45.0f;
-
 // Time variables
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
+
+// Initialize camera object
+Camera camera(
+    glm::vec3(0.0f, 0.0f, 3.0f), 
+    glm::vec3(0.0f, 0.0f, -1.0f),
+    glm::vec3(0.0f, 1.0f, 0.0f),
+    45.0f,
+    2.5f,
+    0.1f
+);
 
 /* Every time the window is resized we need to adjust the OpenGL viewport */
 static void framebuffer_size_callback(GLFWwindow* window, int width, int height)
@@ -41,61 +46,18 @@ static void processInput(GLFWwindow* window)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
-    const float cameraSpeed = 2.5f * deltaTime;
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        cameraPos += cameraSpeed * cameraFront;
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        cameraPos -= cameraSpeed * cameraFront;
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+
+    camera.handleCameraMovement(window, deltaTime);
 }
 
-float lastX = 400.0f, lastY = 300.0f;
-float yaw = -90.0f;
-float pitch = 0.0f;
-bool firstMouse = true;
 void mouseCallback(GLFWwindow* window, double xpos, double ypos)
 {
-    if (firstMouse)
-    {
-        lastX = xpos;
-        lastY = ypos;
-        firstMouse = false;
-    }
-
-    float xoffset = xpos - lastX;
-    float yoffset = lastY - ypos; // reversed since y-coordinates range from bottom to top
-    lastX = xpos;
-    lastY = ypos;
-
-    const float sensitivity = 0.1f;
-    xoffset *= sensitivity;
-    yoffset *= sensitivity;
-
-    yaw += xoffset;
-    pitch += yoffset;
-
-    if (pitch > 89.0f)
-        pitch = 89.0f;
-    if (pitch < -89.0f)
-        pitch = -89.0f;
-
-    glm::vec3 direction;
-    direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-    direction.y = sin(glm::radians(pitch));
-    direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-    cameraFront = glm::normalize(direction);
+    camera.handleCameraRotation(window, xpos, ypos);
 }
 
 void scrollCallback(GLFWwindow* window, double xoffset, double yoffset)
 {
-    fov -= (float)yoffset;
-    if (fov < 1.0f)
-        fov = 1.0f;
-    if (fov > 45.0f)
-        fov = 45.0f;
+    camera.handleMouseScrollZoom(window, xoffset, yoffset);
 }
 
 int main() {
@@ -242,9 +204,9 @@ int main() {
             glm::mat4 view = glm::mat4(1.0f);
             glm::mat4 projection = glm::mat4(1.0f);
 
-            view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+            view = camera.lookAt();
 
-            projection = glm::perspective(glm::radians(fov), ASPECT_RATIO, 0.1f, 100.0f);
+            projection = glm::perspective(glm::radians(camera.fov), ASPECT_RATIO, 0.1f, 100.0f);
 
             shader.setMat4("model", model);
             shader.setMat4("view", view);
