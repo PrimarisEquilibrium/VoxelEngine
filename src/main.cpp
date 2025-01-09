@@ -5,6 +5,7 @@
 #include "Core/Texture/Texture.h"
 #include "Core/Camera/Camera.h"
 #include "Core/VBO/VBO.h"
+#include "Core/VAO/VAO.h"
 
 #include <iostream>
 
@@ -158,12 +159,8 @@ int main() {
     };
 
     /* Create vertex array object and all associated configurations */
-    GLuint VAO;
+    VAO CubeVAO;
     VBO CubeVBO(vertices, sizeof(vertices));
-
-    glGenVertexArrays(1, &VAO);
-
-    glBindVertexArray(VAO);
 
     // Position
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 7 * sizeof(float), (void*)0);
@@ -194,7 +191,7 @@ int main() {
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        glBindVertexArray(VAO);
+        CubeVAO.bind();
 
         for (int i = 0; i < 6; i++) {
 
@@ -217,8 +214,8 @@ int main() {
         glfwPollEvents();
     }
 
-    glDeleteVertexArrays(1, &VAO);
-    glDeleteBuffers(1, &VBO);
+    CubeVAO.remove();
+    CubeVBO.remove();
 
     glfwTerminate();
     return 0;
