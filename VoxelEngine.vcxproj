@@ -141,6 +141,7 @@
   <ItemGroup>
     <ClCompile Include="dependencies\lib\stb.cpp" />
     <ClCompile Include="src\Core\Camera\Camera.cpp" />
+    <ClCompile Include="src\Core\VBO\VBO.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Shaders\Shader.cpp" />
@@ -148,6 +149,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Core\Camera\Camera.h" />
+    <ClInclude Include="src\Core\Renderer\Renderer.h" />
+    <ClInclude Include="src\Core\VBO\VBO.h" />
     <ClInclude Include="src\Shaders\Shader.h" />
     <ClInclude Include="src\Core\Texture\Texture.h" />
   </ItemGroup>

@@ -4,6 +4,7 @@
 #include "Shaders/Shader.h"
 #include "Core/Texture/Texture.h"
 #include "Core/Camera/Camera.h"
+#include "Core/VBO/VBO.h"
 
 #include <iostream>
 
@@ -157,15 +158,12 @@ int main() {
     };
 
     /* Create vertex array object and all associated configurations */
-    GLuint VAO, VBO;
+    GLuint VAO;
+    VBO CubeVBO(vertices, sizeof(vertices));
 
     glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
 
     glBindVertexArray(VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
     // Position
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 7 * sizeof(float), (void*)0);
